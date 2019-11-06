@@ -21,7 +21,7 @@ def flatten_a_o_a(aoa)
 end
 
 def movie_with_director_name(director_name, movie_data)
-  { 
+  {
     :title => movie_data[:title],
     :worldwide_gross => movie_data[:worldwide_gross],
     :release_year => movie_data[:release_year],
@@ -48,8 +48,28 @@ def movies_with_director_key(name, movies_collection)
   # Array of Hashes where each Hash represents a movie; however, they should all have a
   # :director_name key. This addition can be done by using the provided
   # movie_with_director_name method
+  movies = []
+  movies_collection.each do |movie|
+    movies << movie_with_director_name(name, movie)
+  end
+  movies
 end
 
+def collect_studios(collection)
+  studios = {}
+  collection.each do |movie|
+    studios[movie[:studio]] ? (studios[movie[:studio]] << movie) : (studios[movie[:studio]] = [movie])
+  end
+  studios
+end
+
+def total_gross(movie_array)
+  total = 0
+  movie_array.each do |movie|
+    total += movie[:worldwide_gross]
+  end
+  total
+end
 
 def gross_per_studio(collection)
   # GOAL: Given an Array of Hashes where each Hash represents a movie,
@@ -63,6 +83,13 @@ def gross_per_studio(collection)
   #
   # Hash whose keys are the studio names and whose values are the sum
   # total of all the worldwide_gross numbers for every movie in the input Hash
+  movies_by_studio = collect_studios(collection)
+  grosses = {}
+  movies_by_studio.each do |studio, movies|
+    gross = total_gross(movies)
+    grosses[studio] = gross
+  end
+  grosses
 end
 
 def movies_with_directors_set(source)
@@ -76,6 +103,12 @@ def movies_with_directors_set(source)
   #
   # Array of Arrays containing all of a director's movies. Each movie will need
   # to have a :director_name key added to it.
+  out = []
+  source.each do |director|
+    movies = movies_with_director_key(director[:name], director[:movies])
+    out << movies
+  end
+  out
 end
 
 # ----------------    End of Your Code Region --------------------
@@ -87,3 +120,6 @@ def studios_totals(nds)
   movies_with_director_names = flatten_a_o_a(a_o_a_movies_with_director_names)
   return gross_per_studio(movies_with_director_names)
 end
+
+db = directors_database
+pp db
