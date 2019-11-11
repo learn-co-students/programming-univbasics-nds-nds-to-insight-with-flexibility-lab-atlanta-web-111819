@@ -1,5 +1,6 @@
 # Provided, don't edit
 require 'directors_database'
+require 'pry'
 
 # A method we're giving you. This "flattens"  Arrays of Arrays so: [[1,2],
 # [3,4,5], [6]] => [1,2,3,4,5,6].
@@ -21,7 +22,7 @@ def flatten_a_o_a(aoa)
 end
 
 def movie_with_director_name(director_name, movie_data)
-  { 
+  {
     :title => movie_data[:title],
     :worldwide_gross => movie_data[:worldwide_gross],
     :release_year => movie_data[:release_year],
@@ -48,6 +49,15 @@ def movies_with_director_key(name, movies_collection)
   # Array of Hashes where each Hash represents a movie; however, they should all have a
   # :director_name key. This addition can be done by using the provided
   # movie_with_director_name method
+
+  film_array = {name:movies_collection}
+  new_film_array = []
+  movie_index = 0
+  while movie_index < movies_collection.length do
+    new_film_array << movie_with_director_name(name, movies_collection[movie_index])
+    movie_index += 1
+  end
+  new_film_array
 end
 
 
@@ -63,19 +73,25 @@ def gross_per_studio(collection)
   #
   # Hash whose keys are the studio names and whose values are the sum
   # total of all the worldwide_gross numbers for every movie in the input Hash
+  studios_gross = {}
+  collection_index = 0
+  while collection_index < collection.length do
+    if !studios_gross[collection[collection_index][:studio]]
+     studios_gross[collection[collection_index][:studio]] = collection[collection_index][:worldwide_gross]
+     pp studios_gross
+   else
+     studios_gross[collection[collection_index][:studio]] += collection[collection_index][:worldwide_gross]
+  end
+    collection_index += 1
+  end
+   studios_gross
 end
 
 def movies_with_directors_set(source)
-  # GOAL: For each director, find their :movies Array and stick it in a new Array
-  #
-  # INPUT:
-  # * source: An Array of Hashes containing director information including
-  # :name and :movies
-  #
-  # RETURN:
-  #
-  # Array of Arrays containing all of a director's movies. Each movie will need
-  # to have a :director_name key added to it.
+
+    pp source
+
+end
 end
 
 # ----------------    End of Your Code Region --------------------
